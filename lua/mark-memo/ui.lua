@@ -67,7 +67,7 @@ function format_mark(c, pos)
 	if not ok or not lines or #lines == 0 then return nil end
 
 	local content = vim.trim(lines[1])
-	return string.format("[%s] | %s", mark, content)
+	return string.format("%s" .. opts.separator .. "%s", mark, content)
 end
 
 function get_all_marks()
@@ -78,7 +78,7 @@ function get_all_marks()
 
 	for c in mark_symbols:gmatch(".") do
 		local ok, pos = pcall(vim.api.nvim_get_mark, c, {})
-		if ok and pos[1] > 0 then  -- row > 0 means mark is set
+		if ok then
 			-- Format: mark name, line number, and buffer/file name if global
 			local formatted = format_mark(c, pos)	
 			if formatted then
@@ -94,10 +94,7 @@ function M.render()
 	if not buf or not api.nvim_buf_is_valid(buf) then return end
 	api.nvim_buf_set_option(buf, "modifiable", true)
 
-	local lines = {
-		"Mark Memo",
-		"------------",
-	}
+	local lines = {}
 	local marks = get_all_marks()
 
 	if #marks == 0 then

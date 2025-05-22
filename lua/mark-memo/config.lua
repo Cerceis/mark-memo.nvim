@@ -6,6 +6,7 @@ M.defaults = {
 	border = "rounded",
 	position = "topright",
 	toggle_key = "<leader>mm",
+	separator = " | ",
 }
 
 M.options = {}
