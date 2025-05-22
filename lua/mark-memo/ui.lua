@@ -62,7 +62,7 @@ function get_all_marks()
 	local mark_symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 	for c in mark_symbols:gmatch(".") do
-		local ok, pos = pcall(vim.api.nvim_get_mark, c)
+		local ok, pos = pcall(vim.api.nvim_get_mark, c, {})
 		if ok and pos[1] > 0 then  -- row > 0 means mark is set
 			-- Format: mark name, line number, and buffer/file name if global
 			local mark_info = ""
