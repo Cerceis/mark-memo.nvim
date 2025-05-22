@@ -1,11 +1,11 @@
 local M = {}
 
 M.defaults = {
-	width = 30,
+	width = 20,
 	height = 10,
 	border = "rounded",
 	position = "topright",
-	-- Add more defaults here
+	toggle_key = "<leader>mm",
 }
 
 M.options = {}
