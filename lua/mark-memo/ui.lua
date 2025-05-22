@@ -56,15 +56,15 @@ function M.toggle()
 end
 
 function get_user_marks()
-  local marks = vim.api.nvim_buf_get_marks(0) -- 0 = current buffer
+  local marks = vim.fn.getmarklist(0) -- 0 = current buffer
   local user_marks = {}
 
   for _, mark in ipairs(marks) do
-    local name = mark[1]
-    if name:match("[a-zA-Z]") then  -- only named marks
-      local line = mark[2] + 1  -- lines are 0-indexed
-      table.insert(user_marks, string.format("%s: line %d", name, line))
-    end
+	  local name = mark.mark:sub(1, 1)
+	  local line = mark.pos[2]
+	  if name:match("[a-zA-Z]") then  -- Named marks only
+		  table.insert(user_marks, string.format("%s: line %d", name, line))
+	  end
   end
 
   return user_marks
