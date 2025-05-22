@@ -84,8 +84,7 @@ end
 
 function M.render()
 	if not buf or not api.nvim_buf_is_valid(buf) then return end
-
-	api.nvim_buf_set_option(buf, "modifiable", true)
+api.nvim_buf_set_option(buf, "modifiable", true)
 
 	local lines = {
 		"Mark Memo",
@@ -95,7 +94,6 @@ function M.render()
 
 	if #marks == 0 then
 		table.insert(lines, "No marks set")
-		vim.list_extend(lines, marks)
 	else
 		vim.list_extend(lines, marks)
 	end
