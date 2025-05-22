@@ -56,18 +56,30 @@ function M.toggle()
 end
 
 function get_user_marks()
-  local marks = vim.fn.getmarklist(0) -- 0 = current buffer
-  local user_marks = {}
+	local marks = {}
 
-  for _, mark in ipairs(marks) do
-	  local name = mark.mark:sub(1, 1)
-	  local line = mark.pos[2]
-	  if name:match("[a-zA-Z]") then  -- Named marks only
-		  table.insert(user_marks, string.format("%s: line %d", name, line))
-	  end
-  end
+	-- All marks to check: numbers, uppercase, lowercase
+	local mark_symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-  return user_marks
+	for c in mark_symbols:gmatch(".") do
+		local ok, pos = pcall(vim.api.nvim_get_mark, c)
+		if ok and pos[1] > 0 then  -- row > 0 means mark is set
+			-- Format: mark name, line number, and buffer/file name if global
+			local mark_info = ""
+
+			if c:match("%l") then
+				-- lowercase = buffer local mark
+				mark_info = string.format("'%s at line %d (buffer local)", c, pos[1])
+			else
+				-- uppercase or number = global mark or jump mark
+				mark_info = string.format("'%s at line %d in %s", c, pos[1], pos[4] or "[no file]")
+			end
+
+			table.insert(marks, mark_info)
+		end
+	end
+
+	return marks
 end
 
 function M.render()
