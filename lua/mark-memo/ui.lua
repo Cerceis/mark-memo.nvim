@@ -80,7 +80,7 @@ function get_all_marks()
 		local ok, pos = pcall(vim.api.nvim_get_mark, c, {})
 		if ok and pos[1] > 0 then  -- row > 0 means mark is set
 			-- Format: mark name, line number, and buffer/file name if global
-			local formatted_table = format_mark(c, pos)	
+			local formatted = format_mark(c, pos)	
 			if formatted then
 				table.insert(marks, formatted)
 			end
