@@ -55,7 +55,7 @@ function M.toggle()
 	end
 end
 
-function format_mark(c, pos)
+function format_mark(c, pos, separator, win_width)
 	local line_num = pos[1]
 	local buf = pos[3]
 	local mark = c
@@ -67,10 +67,21 @@ function format_mark(c, pos)
 	if not ok or not lines or #lines == 0 then return nil end
 
 	local content = vim.trim(lines[1])
-	return string.format("%s" .. opts.separator .. "%s", mark, content)
+	local mark_display = string.format("%s", c)
+	
+	-- Calculate max preview lenggth based on window width
+	local max_preview_len = win_width - #mark_display - #separator
+	if max_preview_len < 0 then max_preview_len = 0 end
+
+	-- Truncate if exceeded
+	if #content > max_preview_len then
+		content = content:sub(1, max_preview_len - 3) .. "..."
+	end
+
+	return string.format("%s%s%s", mark_display, separator, content)
 end
 
-function get_all_marks()
+function get_all_marks(separator, win_width)
 	local marks = {}
 
 	-- All marks to check: numbers, uppercase, lowercase
@@ -80,7 +91,7 @@ function get_all_marks()
 		local ok, pos = pcall(vim.api.nvim_get_mark, c, {})
 		if ok then
 			-- Format: mark name, line number, and buffer/file name if global
-			local formatted = format_mark(c, pos)	
+			local formatted = format_mark(c, pos, separator, win_width)
 			if formatted then
 				table.insert(marks, formatted)
 			end
@@ -95,7 +106,8 @@ function M.render()
 	api.nvim_buf_set_option(buf, "modifiable", true)
 
 	local lines = {}
-	local marks = get_all_marks()
+	local win_width = vim.api.nvim_win_get_width(win)
+	local marks = get_all_marks(opts.separator, win_width)
 
 	if #marks == 0 then
 		table.insert(lines, "No marks set")
