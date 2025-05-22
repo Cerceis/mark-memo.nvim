@@ -15,6 +15,12 @@ local function create_window()
 
 	buf = api.nvim_create_buf(false, true) -- scratch buffer, no file
 
+	-- Make it unlisted and readonly
+	api.nvim_buf_set_option(buf, "buftype", "nofile")
+	api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+	api.nvim_buf_set_option(buf, "modifiable", false)
+	api.nvim_buf_set_option(buf, "swapfile", false)
+
 	local width = opts.width or 30
 	local height = opts.height or 10
 
@@ -24,6 +30,7 @@ local function create_window()
 		height = height,
 		style = "minimal",
 		border = opts.border or "rounded",
+		focusable = false,
 	}
 
 	if opts.position == "topright" then
