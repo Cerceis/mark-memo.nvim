@@ -55,7 +55,7 @@ function M.toggle()
 	end
 end
 
-function get_user_marks()
+function get_all_marks()
 	local marks = {}
 
 	-- All marks to check: numbers, uppercase, lowercase
@@ -91,10 +91,11 @@ function M.render()
 		"Mark Memo",
 		"------------",
 	}
-	local marks = get_user_marks()
+	local marks = get_all_marks()
 
 	if #marks == 0 then
 		table.insert(lines, "No marks set")
+		vim.list_extend(lines, marks)
 	else
 		vim.list_extend(lines, marks)
 	end
