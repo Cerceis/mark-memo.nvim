@@ -21,8 +21,8 @@ local function create_window()
 	api.nvim_buf_set_option(buf, "modifiable", false)
 	api.nvim_buf_set_option(buf, "swapfile", false)
 
-	local width = opts.width or 30
-	local height = opts.height or 10
+	local width = opts.width or 15
+	local height = opts.height or 5
 
 	local win_opts = {
 		relative = "editor",
@@ -55,6 +55,21 @@ function M.toggle()
 	end
 end
 
+function get_user_marks()
+  local marks = vim.api.nvim_buf_get_marks(0) -- 0 = current buffer
+  local user_marks = {}
+
+  for _, mark in ipairs(marks) do
+    local name = mark[1]
+    if name:match("[a-zA-Z]") then  -- only named marks
+      local line = mark[2] + 1  -- lines are 0-indexed
+      table.insert(user_marks, string.format("%s: line %d", name, line))
+    end
+  end
+
+  return user_marks
+end
+
 function M.render()
 	if not buf or not api.nvim_buf_is_valid(buf) then return end
 
@@ -63,14 +78,16 @@ function M.render()
 	local lines = {
 		"Mark Memo",
 		"------------",
-		"1: Mark at line 10",
-		"2: Mark at line 20",
-		"",
-		"Use toggle to hide/show",
 	}
+	local marks = get_user_marks()
+
+	if #marks == 0 then
+		table.insert(lines, "No marks set")
+	else
+		vim.list_extend(lines, marks)
+	end
 
 	api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
 	api.nvim_buf_set_option(buf, "modifiable", false)
 end
 

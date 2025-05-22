@@ -14,6 +14,12 @@ function M.setup(user_opts)
 		silent = true,
 	})
 
+	vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+		callback = function()
+			require("mark-memo.ui").render()
+		end,
+	})
+
 	if config.options.open_on_start then
 		ui.toggle()
 	end

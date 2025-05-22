@@ -1,8 +1,8 @@
 local M = {}
 
 M.defaults = {
-	width = 20,
-	height = 10,
+	width = 15,
+	height = 5,
 	border = "rounded",
 	position = "topright",
 	toggle_key = "<leader>mm",

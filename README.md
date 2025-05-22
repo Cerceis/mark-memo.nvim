@@ -9,8 +9,8 @@ Use your favorite plugin manager, e.g. with lazy.nvim:
   "Cerceis/mark-memo.nvim",
   config = function()
     require("mark-memo").setup({
-      width = 40,
-      height = 15,
+      width = 15,
+      height = 5,
       border = "rounded",
       position = "topright",
     })
