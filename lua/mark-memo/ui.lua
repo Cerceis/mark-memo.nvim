@@ -55,6 +55,21 @@ function M.toggle()
 	end
 end
 
+function format_mark(c, pos)
+	local line_num = pos[1]
+	local buf = pos[3]
+	local mark = c
+
+	if line_num == 0 or buf == 0 then return nil end
+
+	-- Try to read the line content from the buffer
+	local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, line_num - 1, line_num, false)
+	if not ok or not lines or #lines == 0 then return nil end
+
+	local content = vim.trim(lines[1])
+	return string.format("[%s] | %s", mark, content)
+end
+
 function get_all_marks()
 	local marks = {}
 
@@ -65,17 +80,10 @@ function get_all_marks()
 		local ok, pos = pcall(vim.api.nvim_get_mark, c, {})
 		if ok and pos[1] > 0 then  -- row > 0 means mark is set
 			-- Format: mark name, line number, and buffer/file name if global
-			local mark_info = ""
-
-			if c:match("%l") then
-				-- lowercase = buffer local mark
-				mark_info = string.format("'%s at line %d (buffer local)", c, pos[1])
-			else
-				-- uppercase or number = global mark or jump mark
-				mark_info = string.format("'%s at line %d in %s", c, pos[1], pos[4] or "[no file]")
+			local formatted_table = format_mark(c, pos)	
+			if formatted then
+				table.insert(marks, formatted)
 			end
-
-			table.insert(marks, mark_info)
 		end
 	end
 
@@ -84,7 +92,7 @@ end
 
 function M.render()
 	if not buf or not api.nvim_buf_is_valid(buf) then return end
-api.nvim_buf_set_option(buf, "modifiable", true)
+	api.nvim_buf_set_option(buf, "modifiable", true)
 
 	local lines = {
 		"Mark Memo",
