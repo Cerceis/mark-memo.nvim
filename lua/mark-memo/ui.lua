@@ -58,6 +58,8 @@ end
 function M.render()
 	if not buf or not api.nvim_buf_is_valid(buf) then return end
 
+	api.nvim_buf_set_option(buf, "modifiable", true)
+
 	local lines = {
 		"Mark Memo",
 		"------------",
@@ -68,6 +70,8 @@ function M.render()
 	}
 
 	api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+	api.nvim_buf_set_option(buf, "modifiable", false)
 end
 
 return M
